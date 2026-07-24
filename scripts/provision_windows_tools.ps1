@@ -65,6 +65,14 @@ if (-not $TesseractSource) {
     if ($Process.ExitCode -ne 0) {
         throw "Tesseract installer failed with exit code $($Process.ExitCode)"
     }
+    $InstalledCandidates = @(
+        $TesseractSource,
+        (Join-Path $env:ProgramFiles "Tesseract-OCR"),
+        (Join-Path ${env:ProgramFiles(x86)} "Tesseract-OCR")
+    )
+    $TesseractSource = $InstalledCandidates |
+        Where-Object { $_ -and (Test-Path -LiteralPath (Join-Path $_ "tesseract.exe")) } |
+        Select-Object -First 1
 }
 
 $TesseractExecutable = Join-Path $TesseractSource "tesseract.exe"
