@@ -48,17 +48,21 @@ test("server-renders the complete Persian CleanDrop download page", async () => 
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/);
 });
 
-test("derives social metadata from the request host", async () => {
+test("publishes stable social metadata for the public download site", async () => {
   const response = await render("download.cleandrop.test");
   const html = await response.text();
 
   assert.match(
     html,
-    /<meta[^>]+property="og:image"[^>]+content="https:\/\/download\.cleandrop\.test\/og\.png"/i,
+    /<meta[^>]+property="og:image"[^>]+content="https:\/\/omidzamani11\.github\.io\/CleanDrop\/og\.png"/i,
   );
   assert.match(
     html,
     /<meta[^>]+name="twitter:card"[^>]+content="summary_large_image"/i,
+  );
+  assert.match(
+    html,
+    /<link[^>]+rel="canonical"[^>]+href="https:\/\/omidzamani11\.github\.io\/CleanDrop"/i,
   );
 });
 

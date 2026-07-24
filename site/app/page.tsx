@@ -2,6 +2,7 @@ import Image from "next/image";
 
 const releaseBase =
   "https://github.com/Omidzamani11/CleanDrop/releases/latest/download";
+const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const downloads = {
   installer: `${releaseBase}/CleanDrop-Setup-1.0.0.exe`,
@@ -54,7 +55,7 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="CleanDrop، ابتدای صفحه">
           <Image
             className="brand-mark"
-            src="/cleandrop-icon.png"
+            src={`${publicBasePath}/cleandrop-icon.png`}
             width={44}
             height={44}
             alt=""
@@ -168,7 +169,7 @@ export default function Home() {
             </div>
             <Image
               className="app-shot"
-              src="/cleandrop-desktop-fa.png"
+              src={`${publicBasePath}/cleandrop-desktop-fa.png`}
               width={1320}
               height={850}
               sizes="(max-width: 900px) 94vw, 1180px"
@@ -292,7 +293,7 @@ export default function Home() {
         <div className="brand footer-brand">
           <Image
             className="brand-mark"
-            src="/cleandrop-icon.png"
+            src={`${publicBasePath}/cleandrop-icon.png`}
             width={40}
             height={40}
             alt=""
