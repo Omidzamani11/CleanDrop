@@ -1,0 +1,98 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cleandrop"
+version = "1.0.0"
+description = "Local-first privacy cleaning for images and PDFs"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "AGPL-3.0-or-later" }
+authors = [{ name = "CleanDrop Contributors" }]
+keywords = ["privacy", "metadata", "redaction", "pdf", "image"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Win32 (MS Windows)",
+  "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+]
+dependencies = [
+  "Pillow>=11.1,<13",
+  "PyMuPDF>=1.25,<2",
+  "pikepdf>=9.5,<11",
+  "PySide6>=6.8,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.14,<2",
+  "pytest>=9.0.3,<10",
+  "pytest-cov>=6,<8",
+  "ruff>=0.9,<1",
+  "types-Pillow>=10.2",
+  "pyinstaller>=6.11,<7",
+]
+
+[project.scripts]
+cleandrop = "cleandrop.cli:main"
+cleandrop-gui = "cleandrop.bootstrap:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cleandrop = ["resources/*.png", "resources/*.ico"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config"
+testpaths = ["tests"]
+markers = [
+  "integration: integration tests",
+  "security: security regression tests",
+  "e2e: end-to-end tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["cleandrop"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+omit = [
+  "src/cleandrop/ui/*",
+  "src/cleandrop/bootstrap.py",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = ["vendor", "build", "dist", "downloads", "tools", "site", "node_modules"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "SIM", "RUF"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S108", "S603"]
+"src/cleandrop/adapters/ocr.py" = ["S603"]
+"src/cleandrop/adapters/metadata.py" = ["S603"]
+"src/cleandrop/ui/**" = ["S603"]
+"src/cleandrop/ui/i18n.py" = ["RUF001"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+ignore_missing_imports = true
+exclude = ["build", "dist", "vendor", "downloads", "tools", "site", "node_modules"]

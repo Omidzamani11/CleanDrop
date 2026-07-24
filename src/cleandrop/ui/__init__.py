@@ -1,0 +1,1 @@
+"""CleanDrop desktop interface."""
