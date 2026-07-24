@@ -15,12 +15,26 @@ New-Item -ItemType Directory -Path $Downloads, $TesseractTarget, $ExifToolTarget
 function Get-RemoteFile {
     param(
         [Parameter(Mandatory = $true)][string]$Uri,
-        [Parameter(Mandatory = $true)][string]$Destination
+        [Parameter(Mandatory = $true)][string]$Destination,
+        [string]$Sha256 = ""
     )
     if ((Test-Path -LiteralPath $Destination) -and -not $Force) {
-        return
+        if (-not $Sha256) {
+            return
+        }
+        $CachedHash = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash
+        if ($CachedHash -eq $Sha256) {
+            return
+        }
+        throw "Checksum mismatch for cached download $Destination"
     }
     Invoke-WebRequest -Uri $Uri -OutFile $Destination -UseBasicParsing
+    if ($Sha256) {
+        $DownloadedHash = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash
+        if ($DownloadedHash -ne $Sha256) {
+            throw "Checksum mismatch for downloaded file $Destination"
+        }
+    }
 }
 
 if (-not $TesseractSource) {
@@ -37,8 +51,9 @@ if (-not $TesseractSource) {
 if (-not $TesseractSource) {
     $Installer = Join-Path $Downloads "tesseract-ocr-w64-setup-5.5.0.20241111.exe"
     Get-RemoteFile `
-        -Uri "https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-5.5.0.20241111.exe" `
-        -Destination $Installer
+        -Uri "https://github.com/tesseract-ocr/tesseract/releases/download/5.5.0/tesseract-ocr-w64-setup-5.5.0.20241111.exe" `
+        -Destination $Installer `
+        -Sha256 "F3FC4236425B690C8BE756F35793F77394EE004BE0A6460A440C754D892F68BC"
     $TesseractSource = Join-Path $ProjectRoot "tools\Tesseract-OCR"
     New-Item -ItemType Directory -Path $TesseractSource -Force | Out-Null
     $Process = Start-Process `
