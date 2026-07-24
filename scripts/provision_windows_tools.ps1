@@ -102,8 +102,9 @@ foreach ($Language in @("fas", "eng", "osd")) {
 
 $ExifToolZip = Join-Path $Downloads "exiftool-13.59_64.zip"
 Get-RemoteFile `
-    -Uri "https://sourceforge.net/projects/exiftool/files/exiftool-13.59_64.zip/download" `
-    -Destination $ExifToolZip
+    -Uri "https://fossies.org/windows/misc/exiftool-13.59_64.zip" `
+    -Destination $ExifToolZip `
+    -Sha256 "44B512B25AF500724BA579D0A53C8FC5851628B692DD5E5D94AE4A15C2CBA9EC"
 $ExtractRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("cleandrop-exiftool-" + [guid]::NewGuid())
 New-Item -ItemType Directory -Path $ExtractRoot | Out-Null
 try {
